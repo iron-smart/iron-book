@@ -16,7 +16,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap">
-<!-- book.html v2.4 (17/10/2026, booktx2): כל הטקסטים מההגדרות (book_texts) · טלפון ניתן לעריכה · מטא מההגדרות ·
+<!-- book.html v2.5 (17/10/2026, bookmob): מובייל — כותרת כחולה רציפה, פס "גיבור" בשלב 1 (כותרת + אמון), שורת מיקום
+     עם כתובת האולם + ניווט, משבצות 2×2, בלי כפילות תאריך; כתובת האולם גם בכרטיס שלב 1 ובשלב 2 (כל המסכים).
+     book.html v2.4 (17/10/2026, booktx2): כל הטקסטים מההגדרות (book_texts) · טלפון ניתן לעריכה · מטא מההגדרות ·
      ?preview=1 — תצוגה מקדימה מהמערכת (postMessage ממקור מורשה בלבד, בלי GTM ובלי קביעה אמיתית).
      book.html v2.3 (16/10/2026): סקירת Fable שאושרה — פאנל סיכום בכחול המותג, כותרת ערך, מחסור אמיתי ("עד N מועדים ביום"),
      שורות אמון, מסך אישור אישי + הכנה, הסכמה קצרה, "לשריין", מובייל, טיפוגרפיה, טקסטים ניתנים לעריכה (book_texts).
@@ -35,6 +37,7 @@ if (!/[?&]preview=1(&|$)/.test(location.search)) (function(w,d,s,l,i){w[l]=w[l]|
   --emb:url("data:image/png;base64,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");
   /* צבע — מותג אחד, מצב "פנוי/הצלחה" אחד, שגיאה אחת */
   --brand:#0B2236; --brand-hover:#14324C; --brand-ink:#FFFFFF;
+  --brand-deep:#061827; --brand-deep-2:#0B3552; --brand-soft:#173A57;   /* v2.5 — כותרת הנייד ופס הסיכום, כמו topnav במערכת */
   --ink:#0E1A26; --ink-2:#3A4754; --ink-3:#5E6B78; --ink-4:#8A95A1;
   --bg:#F5F6F8; --surface:#FFFFFF; --surface-2:#F8F9FB; --hover:#F1F3F6;
   --line:#E3E7EC; --line-2:#CFD6DE;
@@ -123,6 +126,14 @@ button{cursor:pointer;background:none;border:0;padding:0}
 .optfoot{margin-top:var(--s5);font-size:var(--t-sm);color:var(--ink-3)}
 .psub{margin:calc(-1 * var(--s4)) 0 var(--s5);color:var(--ink-2);font-size:var(--t-sm)}
 .proof{margin-top:var(--s3);font-size:var(--t-sm);color:var(--ink-2);font-weight:600}
+/* v2.5 — מיקום האולם */
+.opt .loc2{display:flex;align-items:center;gap:4px;margin-top:6px;font-size:var(--t-xs);color:var(--ink-2);font-weight:500}
+.opt .loc2 svg{color:var(--brand);flex:none}
+.where{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s4);padding:var(--s3) var(--s4);border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);font-size:var(--t-sm);color:var(--ink-2)}
+.where svg{color:var(--brand);flex:none}
+.where b{color:var(--ink);font-weight:600}
+.where a{margin-inline-start:auto;font-weight:600;font-size:var(--t-xs)}
+.facts a.chg{display:inline-block}
 
 /* ── Day strip ── */
 .lbl{font-size:var(--t-sm);font-weight:600;color:var(--ink-2);margin:0 0 var(--s3);display:flex;justify-content:space-between;align-items:baseline}
@@ -165,7 +176,7 @@ button{cursor:pointer;background:none;border:0;padding:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* ── Form ── */
-@media (min-width:761px){.chosen.dup{display:none}}
+.chosen.dup{display:none}   /* v2.5 — גם בנייד: התאריך כבר בפס הסיכום */
 .chosen{display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s4);border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--line);margin-bottom:var(--s6);font-size:var(--t-sm)}
 .chosen b{font-weight:600;display:block}
 .chosen .cs{display:block;color:var(--ink-3);font-size:var(--t-xs);margin-top:1px}
@@ -253,31 +264,48 @@ dialog .dact{display:flex;gap:var(--s3);justify-content:flex-start;padding:0 var
   .sum{padding:var(--s6) var(--s5)}
 }
 @media (max-width:760px){
-  .top{padding:var(--s3) var(--s4) 0}
-  .top .logo{height:40px}
-  .top nav .back2{display:none}
-  .wrap{padding:var(--s3) 0 0}
-  .card{grid-template-columns:1fr;grid-template-rows:auto 1fr;align-content:start;border-radius:var(--r-lg) var(--r-lg) 0 0;border-inline:0;border-bottom:0;min-height:0;box-shadow:none}
+  html,body{background:var(--surface)}
+  .top{max-width:none;background:linear-gradient(135deg,var(--brand-deep),var(--brand-deep-2));padding:calc(var(--s3) + env(safe-area-inset-top)) var(--s4) var(--s3);box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  .top .logo{height:30px}
+  .top .logo g{fill:#fff}
+  .top nav a{color:rgba(255,255,255,.82);min-height:36px}
+  .top nav a:hover{color:#fff}
+  .wrap{padding:0}
+  .card{grid-template-columns:1fr;grid-template-rows:auto 1fr;align-content:start;border-radius:0;border:0;min-height:0;box-shadow:none}
   .sum{display:none}
   #sbar{display:block}
-  .sumbar{display:flex;align-items:center;gap:var(--s3);padding:var(--s4);background:var(--brand);color:#fff;font-size:var(--t-sm)}
+  .sumbar{display:flex;align-items:flex-start;gap:var(--s3);padding:var(--s4) var(--s4) var(--s5);background:var(--brand-soft);color:#fff;font-size:var(--t-sm);border-radius:0 0 var(--r-lg) var(--r-lg)}
+  .sumbar .si{background:rgba(255,255,255,.14)}
+  .sumbar .btnq{margin-top:-4px}
+  .sumbar .loc{display:flex;align-items:center;gap:5px;margin-top:6px;color:#fff;font-size:var(--t-xs);font-weight:500;text-decoration:none;white-space:normal}
+  .sumbar .loc svg{flex:none;color:#86D7AE}
+  .sumbar .loc u{color:rgba(255,255,255,.82);text-underline-offset:3px;margin-inline-start:2px}
+  .sumbar.hero{display:block;padding:var(--s5) var(--s4) var(--s6)}
+  .sumbar.hero h1{margin:0;font-size:var(--t-xl);line-height:1.25;font-weight:700;letter-spacing:-.01em}
+  .sumbar.hero p{margin:var(--s2) 0 0;color:rgba(255,255,255,.84);font-size:var(--t-sm);line-height:1.55}
+  .sumbar.hero .as{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);margin-top:var(--s4);font-size:var(--t-xs);color:rgba(255,255,255,.9)}
+  .sumbar.hero .as span{display:inline-flex;align-items:center;gap:5px}
+  .sumbar.hero .as svg{color:#86D7AE;flex:none}
   .sumbar .btnq{color:rgba(255,255,255,.86)}
   .sumbar .btnq:hover{background:rgba(255,255,255,.1);color:#fff}
   .sumbar .si{width:36px;height:36px;border-radius:var(--r-md);background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
   .sumbar .st{min-width:0;flex:1}
   .sumbar .st b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sumbar .st span{color:rgba(255,255,255,.78);font-size:var(--t-xs);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sumbar .st b{font-size:var(--t-md)}
+  .lbl{flex-direction:column;align-items:flex-start;gap:2px}
+  .tz{font-size:var(--t-xs)}
   .main{padding:var(--s5) var(--s4) var(--s6)}
   .phead{margin-bottom:var(--s5)}
   .opt{grid-template-columns:40px minmax(0,1fr) auto;padding:var(--s4);gap:var(--s3)}
   .opt .m{padding:3px 8px}
-  .slots{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .slots{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fields{grid-template-columns:1fr}
   .actbar{position:sticky;bottom:0;margin:var(--s6) calc(-1 * var(--s4)) 0;padding:var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);z-index:4}
   .actbar .btn{flex:1}
   .next{grid-template-columns:1fr}
   .done h2{font-size:var(--t-xl)}
-  .foot{padding:var(--s5) var(--s4) var(--s8);background:var(--surface)}
+  .foot{padding:var(--s5) var(--s4) calc(var(--s8) + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line)}
 }
 /* v2.4 — פס תצוגה מקדימה (רק ?preview=1) */
 .pvbar{position:fixed;inset:auto 0 0 0;z-index:50;background:#0B2236;color:#fff;padding:10px var(--s4);display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;font-size:var(--t-sm);box-shadow:0 -4px 16px rgba(0,0,0,.18)}
@@ -531,6 +559,7 @@ body.pv{padding-bottom:64px}
   function firstName() { return (S.f.name || '').trim().split(/\s+/)[0] || ''; }
   function dur(t) { return t === 'showroom' ? ((S.cfg && S.cfg.showroom_min) || 30) : ((S.cfg && S.cfg.consult_min) || 15); }
   function addr() { return (S.cfg && S.cfg.address) || 'קומבה 32, חדרה'; }
+  function wazeHref(a) { return 'https://waze.com/ul?q=' + encodeURIComponent(a) + '&navigate=yes'; }
   function whereOf(t) { return t === 'showroom' ? addr() : TYPES.consult.where; }
 
   /* ═══════════════ רכיבים ═══════════════ */
@@ -596,7 +625,8 @@ body.pv{padding-bottom:64px}
     return '<div class="lbl">' + h(T('step2.pickDay')) + ' <small>' + h(T('step2.scarcity', { max: maxSlots() })) + '</small></div>' +
       '<div class="days" role="radiogroup" aria-label="יום">' + chips + '</div>' +
       grp(h(T('step2.morning')), am) + grp(h(T('step2.afternoon')), pm) +
-      '<div class="tz">' + h(T(t === 'showroom' ? 'step2.note.showroom' : 'step2.note.consult', { min: dur(t) })) + '</div>';
+      '<div class="tz">' + h(T(t === 'showroom' ? 'step2.note.showroom' : 'step2.note.consult', { min: dur(t) })) + '</div>' +
+      (t === 'showroom' && S.mode === 'book' ? '<div class="where">' + I(IC.pin, 18) + '<span>' + h(T('when.where')) + ': <b>' + h(addr()) + '</b></span><a href="' + h(wazeHref(addr())) + '" target="_blank" rel="noopener">' + h(T('manage.nav')) + '</a></div>' : '');
   }
 
   /* ═══════════════ סיכום ═══════════════ */
@@ -610,7 +640,7 @@ body.pv{padding-bottom:64px}
     if (t) {
       facts += li(TYPES[t].ic, '<b>' + h(TYPES[t].name) + '</b>', '', showPick && S.step > 1 ? 'to1' : '');
       facts += li(IC.clock, dur(t) + ' ' + h(T('unit.minutes')));
-      facts += li(t === 'showroom' ? IC.pin : IC.phone, h(whereOf(t)));
+      facts += li(t === 'showroom' ? IC.pin : IC.phone, h(whereOf(t)) + (t === 'showroom' ? ' <a class="chg" href="' + h(wazeHref(b && b.address ? b.address : addr())) + '" target="_blank" rel="noopener">' + h(T('manage.nav')) + '</a>' : ''));
       if (day && (slot || !showPick || S.step >= 2)) facts += li(IC.cal, '<b>' + h(dLong(day)) + (slot ? ' · ' + h(slot) : '') + '</b>', 'pick', showPick && S.step > 2 ? 'to2' : '');
     }
     var title = S.mode === 'manage' ? T('manage.asideTitle') : T('aside.title');
@@ -623,11 +653,19 @@ body.pv{padding-bottom:64px}
   function sumbarHtml() {
     var b = S.mode === 'manage' && S.mg && S.mg.booking ? S.mg.booking : null;
     var t = b ? b.type : S.type;
-    if (!t) return '<div class="sumbar"><div class="si">' + I(IC.cal, 18) + '</div><div class="st"><b>' + h(T('aside.title')) + '</b><span>' + h(T('assure.1')) + '</span></div></div>';
+    if (!t) {   /* v2.5 — שלב 1 בנייד: כותרת הערך + שורות האמון (עד עכשיו הוסתרו בנייד) */
+      var as = ['assure.1', 'assure.2', 'assure.3'].map(function (k) { var x = T(k); return x ? '<span>' + I(IC.check, 14) + h(x) + '</span>' : ''; }).join('');
+      return '<div class="sumbar hero"><h1>' + h(T('aside.title')) + '</h1><p>' + h(T('aside.lead')) + '</p>' + (as ? '<div class="as">' + as + '</div>' : '') + '</div>';
+    }
     var day = b ? b.date : (S.done ? S.done.date : S.day), slot = b ? b.time : (S.done ? S.done.time : S.slot);
-    var line2 = (day && (slot || b)) ? dMid(day) + (slot ? ' · ' + slot : '') : dur(t) + ' ' + T('unit.minutes') + ' · ' + T(t === 'showroom' ? 'sum.showroom' : 'sum.consult');
-    return '<div class="sumbar"><div class="si">' + I(TYPES[t].ic, 18) + '</div><div class="st"><b>' + h(TYPES[t].name) + '</b><span>' + h(line2) + '</span></div>' +
-      (S.mode === 'book' && !S.done && S.step > 1 ? '<button type="button" class="btnq" data-act="to1">' + h(T('change')) + '</button>' : '') + '</div>';
+    var when = (day && (slot || b)) ? dMid(day) + (slot ? ' · ' + slot : '') : '';
+    var line2 = dur(t) + ' ' + T('unit.minutes') + ' · ' + (when || T(t === 'showroom' ? 'sum.showroom' : 'sum.consult'));
+    var a = b && b.address ? b.address : addr();
+    var loc = t === 'showroom'
+      ? '<a class="loc" href="' + h(wazeHref(a)) + '" target="_blank" rel="noopener">' + I(IC.pin, 14) + h(a) + ' · <u>' + h(T('manage.nav')) + '</u></a>'
+      : '';   /* ייעוץ — "15 דקות · בטלפון" כבר אומר הכול */
+    var back = S.mode === 'book' && !S.done && S.step > 1 ? '<button type="button" class="btnq" data-act="' + (S.step > 2 ? 'to2' : 'to1') + '">' + h(T('change')) + '</button>' : '';
+    return '<div class="sumbar"><div class="si">' + I(TYPES[t].ic, 18) + '</div><div class="st"><b>' + h(TYPES[t].name) + '</b><span>' + h(line2) + '</span>' + loc + '</div>' + back + '</div>';
   }
 
   /* ═══════════════ שלבים ═══════════════ */
@@ -635,7 +673,8 @@ body.pv{padding-bottom:64px}
     var opt = function (t) {
       var on = S.type === t;
       return '<button type="button" class="opt" role="radio" aria-checked="' + on + '" tabindex="' + (on || (!S.type && t === 'consult') ? 0 : -1) + '" data-act="type" data-v="' + t + '">' +
-        '<span class="ic">' + I(TYPES[t].ic, 22) + '</span><span><span class="t">' + h(TYPES[t].name) + '</span><span class="d" style="display:block">' + h(TYPES[t].desc) + '</span></span>' +
+        '<span class="ic">' + I(TYPES[t].ic, 22) + '</span><span><span class="t">' + h(TYPES[t].name) + '</span><span class="d" style="display:block">' + h(TYPES[t].desc) + '</span>' +
+        (t === 'showroom' ? '<span class="loc2">' + I(IC.pin, 14) + h(addr()) + '</span>' : '') + '</span>' +
         '<span style="display:flex;align-items:center;gap:12px"><span class="m">' + dur(t) + ' ' + h(T('unit.minutes')) + '</span><span class="go">' + I(IC.chev, 20) + '</span></span></button>';
     };
     var pr = T('proof');
