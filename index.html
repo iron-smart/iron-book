@@ -16,7 +16,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap">
-<!-- book.html v2.6 (17/10/2026, bookq): שלב 3 — "במה אתם מתעניינים?" (חובה, קוד קבוע ⇒ עדכון תשאול details.q.q_intent) + שאלת המשך
+<!-- book.html v2.7 (17/10/2026, bookreq): שאלת ההמשך חובה; כוכבית אדומה בכל שדה חובה; שגיאות intent/notes מהשרת (booking v10) מסומנות בשדה.
+     book.html v2.6 (17/10/2026, bookq): שלב 3 — "במה אתם מתעניינים?" (חובה, קוד קבוע ⇒ עדכון תשאול details.q.q_intent) + שאלת המשך
      חופשית (מוצר / ספרו לנו); הוסרו "מה אתם מתכננים" ושדה ההערות.
      book.html v2.5 (17/10/2026, bookmob): מובייל — כותרת כחולה רציפה, פס "גיבור" בשלב 1 (כותרת + אמון), שורת מיקום
      עם כתובת האולם + ניווט, משבצות 2×2, בלי כפילות תאריך; כתובת האולם גם בכרטיס שלב 1 ובשלב 2 (כל המסכים).
@@ -196,6 +197,8 @@ button{cursor:pointer;background:none;border:0;padding:0}
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}
 .f label{font-size:var(--t-sm);font-weight:500;color:var(--ink-2)}
 .f label .o{color:var(--ink-4);font-weight:400}
+.req{color:var(--err);font-weight:600;margin-inline-start:2px}   /* v2.7 — כוכבית שדה חובה */
+.f.bad textarea{border-color:var(--err);box-shadow:0 0 0 3px rgba(180,35,24,.10)}
 .f input,.f textarea{width:100%;border:1px solid var(--line-2);border-radius:var(--r-md);background:var(--surface);padding:0 var(--s3);height:46px;font-size:var(--t-md);transition:border-color var(--dur),box-shadow var(--dur)}
 .f textarea{height:auto;min-height:88px;padding:10px var(--s3);resize:vertical}
 .f input:hover,.f textarea:hover{border-color:#B9C2CC}
@@ -543,6 +546,8 @@ body.pv{padding-bottom:64px}
     "move.offline.title": "לא ניתן לשנות מועד אונליין כרגע",
     "move.offline.text": "התקשרו אלינו ונמצא מועד חדש יחד.",
     "err.intent": "נא לבחור במה אתם מתעניינים",
+    "err.notes.product": "נא לכתוב באיזה מוצר אתם מתעניינים",
+    "err.notes.more": "נא לספר לנו בכמה מילים על המתחם",
     "err.name": "נא למלא שם מלא",
     "err.phone": "נא למלא מספר נייד תקין, למשל 050-1234567",
     "err.email.req": "נא למלא כתובת אימייל",
@@ -707,9 +712,10 @@ body.pv{padding-bottom:64px}
       (S.days && S.days.some(function (d) { return d.slots && d.slots.length; }) ?
         '<div class="actbar"><button type="button" class="btn" data-act="to3"' + (S.slot ? '' : ' disabled') + '>' + h(cta) + '</button></div>' : '');
   }
+  var REQ = '<span class="req" aria-hidden="true">*</span>';   /* v2.7 — רומן: "כוכבית אדומה קטנה" בכל שדה חובה */
   function fld(id, label, type, extra, opt, span) {
     var bad = S.errs[id];
-    return '<div class="f' + (bad ? ' bad' : '') + (span ? ' span2' : '') + '"><label for="f_' + id + '">' + h(label) + (opt ? ' <span class="o">' + h(T('f.optional')) + '</span>' : '') + '</label>' +
+    return '<div class="f' + (bad ? ' bad' : '') + (span ? ' span2' : '') + '"><label for="f_' + id + '">' + h(label) + (opt ? ' <span class="o">' + h(T('f.optional')) + '</span>' : REQ) + '</label>' +
       '<input id="f_' + id + '" name="' + id + '" type="' + type + '" value="' + h(S.f[id]) + '" ' + extra + (bad ? ' aria-invalid="true" aria-describedby="e_' + id + '"' : '') + '>' +
       (bad ? '<span class="e" id="e_' + id + '">' + h(bad) + '</span>' : '') + '</div>';
   }
@@ -717,12 +723,13 @@ body.pv{padding-bottom:64px}
     var cta = T(S.type === 'showroom' ? 'cta.showroom' : 'cta.consult');
     var moreOpen = S.moreOpen || S.f.city;
     var pr = S.intent === 'product';
-    var q = '<div class="qbox' + (S.errs.intent ? ' bad' : '') + '"><span class="ql" id="qiL">' + h(T('q.intent.label')) + '</span>' +
-      '<div class="chips" role="radiogroup" aria-labelledby="qiL"' + (S.errs.intent ? ' aria-invalid="true" aria-describedby="e_intent"' : '') + '>' +
+    var q = '<div class="qbox' + (S.errs.intent ? ' bad' : '') + '"><span class="ql" id="qiL">' + h(T('q.intent.label')) + REQ + '</span>' +
+      '<div class="chips" role="radiogroup" aria-labelledby="qiL" aria-required="true"' + (S.errs.intent ? ' aria-invalid="true" aria-describedby="e_intent"' : '') + '>' +
       INTENTS.map(function (c, n) { var on = S.intent === c; return '<button type="button" class="chip" role="radio" id="qi' + n + '" aria-checked="' + on + '" tabindex="' + (on || (!S.intent && n === 0) ? 0 : -1) + '" data-act="intent" data-v="' + c + '">' + h(T('q.intent.' + c)) + '</button>'; }).join('') + '</div>' +
       (S.errs.intent ? '<span class="e" id="e_intent" role="alert">' + h(S.errs.intent) + '</span>' : '') +
-      (S.intent ? '<div class="f"><label for="f_notes">' + h(T(pr ? 'q.product.label' : 'q.more.label')) + ' <span class="o">' + h(T('f.optional')) + '</span></label>' +
-        '<textarea id="f_notes" name="notes" maxlength="500" rows="2" placeholder="' + h(T(pr ? 'q.product.placeholder' : 'q.more.placeholder')) + '">' + h(S.f.notes) + '</textarea></div>' : '') + '</div>';
+      (S.intent ? '<div class="f' + (S.errs.notes ? ' bad' : '') + '"><label for="f_notes">' + h(T(pr ? 'q.product.label' : 'q.more.label')) + REQ + '</label>' +
+        '<textarea id="f_notes" name="notes" maxlength="500" rows="2" required placeholder="' + h(T(pr ? 'q.product.placeholder' : 'q.more.placeholder')) + '"' + (S.errs.notes ? ' aria-invalid="true" aria-describedby="e_notes"' : '') + '>' + h(S.f.notes) + '</textarea>' +
+        (S.errs.notes ? '<span class="e" id="e_notes">' + h(S.errs.notes) + '</span>' : '') + '</div>' : '') + '</div>';
     return head(T('step3.title'), 3, 'to2') + note(S.msg) +
       '<div class="chosen dup">' + I(IC.cal, 18) + '<span><b>' + h(dLong(S.day)) + ' · ' + h(S.slot) + '</b><span class="cs">' + h(TYPES[S.type].name) + ' · ' + dur(S.type) + ' ' + h(T('unit.minutes')) + '</span></span><span class="sp"></span><button type="button" class="btnq" data-act="to2">' + h(T('change')) + '</button></div>' +
       '<form id="frm" novalidate>' + q + '<div class="fields">' +
@@ -735,8 +742,8 @@ body.pv{padding-bottom:64px}
       fld('city', T('f.city'), 'text', 'autocomplete="address-level2" maxlength="60"', true) +
       '</div></details>' +
       '<div class="hp" aria-hidden="true"><label>אתר<input name="website" tabindex="-1" autocomplete="off" value=""></label></div>' +
-      '<label class="consent' + (S.errs.consent ? ' bad' : '') + '"><input type="checkbox" id="f_consent" name="consent"' + (S.f.consent ? ' checked' : '') + (S.errs.consent ? ' aria-invalid="true"' : '') + '>' +
-      '<span>' + h(T('step3.consent')) + ' · <a href="https://ironfitness.co.il/privacy-policy/" target="_blank" rel="noopener">' + h(T('foot.privacy')) + '</a></span></label>' + (S.errs.consent ? '<span class="ce" role="alert">' + h(T('err.consent.long')) + '</span>' : '') +
+      '<label class="consent' + (S.errs.consent ? ' bad' : '') + '"><input type="checkbox" id="f_consent" name="consent" required' + (S.f.consent ? ' checked' : '') + (S.errs.consent ? ' aria-invalid="true"' : '') + '>' +
+      '<span>' + h(T('step3.consent')) + REQ + ' · <a href="https://ironfitness.co.il/privacy-policy/" target="_blank" rel="noopener">' + h(T('foot.privacy')) + '</a></span></label>' + (S.errs.consent ? '<span class="ce" role="alert">' + h(T('err.consent.long')) + '</span>' : '') +
       '<div class="actbar"><button type="submit" class="btn"' + (S.busy ? ' disabled' : '') + '>' + (S.busy ? '<span class="spin" aria-hidden="true"></span> ' + h(T('step3.busy')) : h(cta)) + '</button></div></form>';
   }
 
@@ -849,6 +856,7 @@ body.pv{padding-bottom:64px}
   function validate() {
     var e = {};
     if (!S.intent) e.intent = T('err.intent');
+    else if (S.f.notes.length < 2) e.notes = T(S.intent === 'product' ? 'err.notes.product' : 'err.notes.more');
     if (S.f.name.length < 2) e.name = T('err.name');
     if (!phoneOk(S.f.phone)) e.phone = T('err.phone');
     if (!S.f.email) e.email = T('err.email.req');
@@ -859,7 +867,7 @@ body.pv{padding-bottom:64px}
   function submit() {
     readForm(); S.errs = validate(); S.msg = null;
     if (Object.keys(S.errs).length) {
-      render(S.errs.intent ? 'qi0' : S.errs.name ? 'f_name' : S.errs.phone ? 'f_phone' : S.errs.email ? 'f_email' : 'f_consent'); return;
+      render(S.errs.intent ? 'qi0' : S.errs.notes ? 'f_notes' : S.errs.name ? 'f_name' : S.errs.phone ? 'f_phone' : S.errs.email ? 'f_email' : 'f_consent'); return;
     }
     if (PV) { pvDone(); return; }
     S.busy = true; render();
@@ -878,7 +886,7 @@ body.pv{padding-bottom:64px}
       var err = j.error;
       track('booking_error', { booking_type: S.type, reason: String(err || j._status) });
       if (err === 'invalid' && j.fields) {
-        var map = { full_name: 'name', phone: 'phone', email: 'email', consent: 'consent' };
+        var map = { full_name: 'name', phone: 'phone', email: 'email', consent: 'consent', intent: 'intent', notes: 'notes' };
         j.fields.forEach(function (f) { if (map[f]) S.errs[map[f]] = T('err.field'); });
         if (j.fields.indexOf('slot') >= 0) { S.step = 2; S.slot = null; S.msg = { k: 'err', html: h(T('err.slot')) }; loadSlots(); return; }
         S.msg = { k: 'err', html: h(T('err.fields')) }; render(); return;
