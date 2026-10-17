@@ -16,7 +16,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap">
-<!-- book.html v2.5 (17/10/2026, bookmob): מובייל — כותרת כחולה רציפה, פס "גיבור" בשלב 1 (כותרת + אמון), שורת מיקום
+<!-- book.html v2.6 (17/10/2026, bookq): שלב 3 — "במה אתם מתעניינים?" (חובה, קוד קבוע ⇒ עדכון תשאול details.q.q_intent) + שאלת המשך
+     חופשית (מוצר / ספרו לנו); הוסרו "מה אתם מתכננים" ושדה ההערות.
+     book.html v2.5 (17/10/2026, bookmob): מובייל — כותרת כחולה רציפה, פס "גיבור" בשלב 1 (כותרת + אמון), שורת מיקום
      עם כתובת האולם + ניווט, משבצות 2×2, בלי כפילות תאריך; כתובת האולם גם בכרטיס שלב 1 ובשלב 2 (כל המסכים).
      book.html v2.4 (17/10/2026, booktx2): כל הטקסטים מההגדרות (book_texts) · טלפון ניתן לעריכה · מטא מההגדרות ·
      ?preview=1 — תצוגה מקדימה מהמערכת (postMessage ממקור מורשה בלבד, בלי GTM ובלי קביעה אמיתית).
@@ -126,6 +128,15 @@ button{cursor:pointer;background:none;border:0;padding:0}
 .optfoot{margin-top:var(--s5);font-size:var(--t-sm);color:var(--ink-3)}
 .psub{margin:calc(-1 * var(--s4)) 0 var(--s5);color:var(--ink-2);font-size:var(--t-sm)}
 .proof{margin-top:var(--s3);font-size:var(--t-sm);color:var(--ink-2);font-weight:600}
+/* v2.6 — שאלת "במה אתם מתעניינים" */
+.qbox{margin-bottom:var(--s5);padding:var(--s4);border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface-2)}
+.qbox.bad{border-color:var(--err);box-shadow:0 0 0 3px rgba(180,35,24,.08)}
+.qbox .ql{display:block;font-size:var(--t-sm);font-weight:600;color:var(--ink);margin-bottom:var(--s3)}
+.qbox .chips{gap:var(--s2)}
+.qbox .chip{height:40px;background:var(--surface)}
+.qbox .chip[aria-checked="true"]{background:var(--brand);color:var(--brand-ink)}
+.qbox .f{margin-top:var(--s4)}
+.qbox .e{display:block;margin-top:var(--s2);font-size:var(--t-xs);color:var(--err)}
 /* v2.5 — מיקום האולם */
 .opt .loc2{display:flex;align-items:center;gap:4px;margin-top:6px;font-size:var(--t-xs);color:var(--ink-2);font-weight:500}
 .opt .loc2 svg{color:var(--brand);flex:none}
@@ -394,7 +405,7 @@ body.pv{padding-bottom:64px}
 
   var S = {
     mode: token ? 'manage' : 'book', step: 1, cfg: null, type: null, days: null,
-    day: null, slot: null, plan: null, busy: false, msg: null, errs: {}, done: null, degraded: false, moreOpen: false,
+    day: null, slot: null, intent: null, busy: false, msg: null, errs: {}, done: null, degraded: false, moreOpen: false,
     f: { name: '', phone: '', email: '', city: '', notes: '', consent: false, website: '' },
     mg: null, mgView: 'info'
   };
@@ -436,16 +447,20 @@ body.pv{padding-bottom:64px}
     "step2.pickTime": "בחרו שעה",
     "step2.cta": "לשריין את {date}",
     "step3.title": "הפרטים שלכם",
+    "q.intent.label": "במה אתם מתעניינים?",
+    "q.intent.new": "פתיחת מתחם כושר חדש",
+    "q.intent.upgrade": "שדרוג מתחם כושר קיים",
+    "q.intent.product": "מתעניינים במוצר",
+    "q.product.label": "באיזה מוצר?",
+    "q.product.placeholder": "למשל: הליכון, כלוב סקוואט, סט משקולות",
+    "q.more.label": "ספרו לנו בכמה מילים",
+    "q.more.placeholder": "גודל המקום, למי הוא מיועד, מה חשוב לכם",
     "f.name": "שם מלא",
     "f.phone": "טלפון נייד",
     "step3.more": "פרטים נוספים (לא חובה — עוזר לנו להתכונן)",
     "f.email": "אימייל",
     "f.city": "עיר",
     "f.optional": "(לא חובה)",
-    "step3.plans.label": "מה אתם מתכננים?",
-    "step3.plans": "חדר כושר ביתי | סטודיו או מכון | חדר כושר בבניין או ארגון | שדרוג חדר קיים",
-    "step3.notes.label": "משהו שחשוב לנו לדעת?",
-    "step3.notes.placeholder": "גודל החדר, מכשירים שמעניינים אתכם, לוח זמנים",
     "step3.consent": "אפשר ליצור איתי קשר לתיאום הפגישה",
     "cta.showroom": "שריון הפגישה",
     "cta.consult": "שריון השיחה",
@@ -527,8 +542,10 @@ body.pv{padding-bottom:64px}
     "link.err.text": "נסו שוב בעוד רגע, או התקשרו אלינו.",
     "move.offline.title": "לא ניתן לשנות מועד אונליין כרגע",
     "move.offline.text": "התקשרו אלינו ונמצא מועד חדש יחד.",
+    "err.intent": "נא לבחור במה אתם מתעניינים",
     "err.name": "נא למלא שם מלא",
     "err.phone": "נא למלא מספר נייד תקין, למשל 050-1234567",
+    "err.email.req": "נא למלא כתובת אימייל",
     "err.email": "כתובת האימייל אינה תקינה",
     "err.consent.long": "כדי לקבוע, יש לאשר את יצירת הקשר",
     "err.field": "נא לבדוק את השדה",
@@ -555,7 +572,7 @@ body.pv{padding-bottom:64px}
   function phoneTel() { return 'tel:' + phone().replace(/[^0-9+]/g, ''); }
   function phoneA() { return '<a href="' + phoneTel() + '">' + h(phone()) + '</a>'; }
   function withPhone(k) { return h(T(k)) + ' ' + phoneA() + '.'; }
-  function plans() { return T('step3.plans').split('|').map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 8); }
+  var INTENTS = ['new', 'upgrade', 'product'];   /* v2.6 — קודים קבועים; התצוגה מ-T('q.intent.<קוד>') */
   function firstName() { return (S.f.name || '').trim().split(/\s+/)[0] || ''; }
   function dur(t) { return t === 'showroom' ? ((S.cfg && S.cfg.showroom_min) || 30) : ((S.cfg && S.cfg.consult_min) || 15); }
   function addr() { return (S.cfg && S.cfg.address) || 'קומבה 32, חדרה'; }
@@ -698,20 +715,24 @@ body.pv{padding-bottom:64px}
   }
   function vDetails() {
     var cta = T(S.type === 'showroom' ? 'cta.showroom' : 'cta.consult');
-    var moreOpen = S.moreOpen || S.errs.email || S.f.email || S.f.city || S.f.notes || S.plan;
+    var moreOpen = S.moreOpen || S.f.city;
+    var pr = S.intent === 'product';
+    var q = '<div class="qbox' + (S.errs.intent ? ' bad' : '') + '"><span class="ql" id="qiL">' + h(T('q.intent.label')) + '</span>' +
+      '<div class="chips" role="radiogroup" aria-labelledby="qiL"' + (S.errs.intent ? ' aria-invalid="true" aria-describedby="e_intent"' : '') + '>' +
+      INTENTS.map(function (c, n) { var on = S.intent === c; return '<button type="button" class="chip" role="radio" id="qi' + n + '" aria-checked="' + on + '" tabindex="' + (on || (!S.intent && n === 0) ? 0 : -1) + '" data-act="intent" data-v="' + c + '">' + h(T('q.intent.' + c)) + '</button>'; }).join('') + '</div>' +
+      (S.errs.intent ? '<span class="e" id="e_intent" role="alert">' + h(S.errs.intent) + '</span>' : '') +
+      (S.intent ? '<div class="f"><label for="f_notes">' + h(T(pr ? 'q.product.label' : 'q.more.label')) + ' <span class="o">' + h(T('f.optional')) + '</span></label>' +
+        '<textarea id="f_notes" name="notes" maxlength="500" rows="2" placeholder="' + h(T(pr ? 'q.product.placeholder' : 'q.more.placeholder')) + '">' + h(S.f.notes) + '</textarea></div>' : '') + '</div>';
     return head(T('step3.title'), 3, 'to2') + note(S.msg) +
       '<div class="chosen dup">' + I(IC.cal, 18) + '<span><b>' + h(dLong(S.day)) + ' · ' + h(S.slot) + '</b><span class="cs">' + h(TYPES[S.type].name) + ' · ' + dur(S.type) + ' ' + h(T('unit.minutes')) + '</span></span><span class="sp"></span><button type="button" class="btnq" data-act="to2">' + h(T('change')) + '</button></div>' +
-      '<form id="frm" novalidate><div class="fields">' +
+      '<form id="frm" novalidate>' + q + '<div class="fields">' +
       fld('name', T('f.name'), 'text', 'autocomplete="name" maxlength="80" required') +
       fld('phone', T('f.phone'), 'tel', 'autocomplete="tel" inputmode="tel" dir="ltr" maxlength="20" placeholder="050-0000000" required') +
+      fld('email', T('f.email'), 'email', 'autocomplete="email" dir="ltr" maxlength="120" placeholder="name@example.com" required', false, true) +
       '</div>' +
       '<details class="more" id="more"' + (moreOpen ? ' open' : '') + '><summary>' + h(T('step3.more')) + I(IC.down, 16) + '</summary>' +
       '<div class="fields">' +
-      fld('email', T('f.email'), 'email', 'autocomplete="email" dir="ltr" maxlength="120" placeholder="name@example.com"', true) +
       fld('city', T('f.city'), 'text', 'autocomplete="address-level2" maxlength="60"', true) +
-      '<div class="f span2"><span style="font-size:var(--t-sm);font-weight:500;color:var(--ink-2)" id="plL">' + h(T('step3.plans.label')) + '</span><div class="chips" role="radiogroup" aria-labelledby="plL">' +
-      plans().map(function (p) { return '<button type="button" class="chip" role="radio" aria-checked="' + (S.plan === p) + '" data-act="plan" data-v="' + h(p) + '">' + h(p) + '</button>'; }).join('') + '</div></div>' +
-      '<div class="f span2"><label for="f_notes">' + h(T('step3.notes.label')) + ' <span class="o">' + h(T('f.optional')) + '</span></label><textarea id="f_notes" name="notes" maxlength="500" placeholder="' + h(T('step3.notes.placeholder')) + '">' + h(S.f.notes) + '</textarea></div>' +
       '</div></details>' +
       '<div class="hp" aria-hidden="true"><label>אתר<input name="website" tabindex="-1" autocomplete="off" value=""></label></div>' +
       '<label class="consent' + (S.errs.consent ? ' bad' : '') + '"><input type="checkbox" id="f_consent" name="consent"' + (S.f.consent ? ' checked' : '') + (S.errs.consent ? ' aria-invalid="true"' : '') + '>' +
@@ -821,28 +842,30 @@ body.pv{padding-bottom:64px}
   function readForm() {
     var fm = $('frm'); if (!fm) return;
     S.f.name = fm.name.value.trim(); S.f.phone = fm.phone.value.trim(); S.f.email = fm.email.value.trim();
-    S.f.city = fm.city.value.trim(); S.f.notes = fm.notes.value.trim(); S.f.consent = fm.consent.checked; S.f.website = fm.website.value;
+    S.f.city = fm.city.value.trim(); if (fm.notes) S.f.notes = fm.notes.value.trim(); S.f.consent = fm.consent.checked; S.f.website = fm.website.value;
     var mo = $('more'); if (mo) S.moreOpen = mo.open;
   }
   function phoneOk(p) { var d = String(p).replace(/[^0-9]/g, ''); if (d.indexOf('972') === 0) d = '0' + d.slice(3); return /^05[0-9]{8}$/.test(d) || /^0[2-9][0-9]{7}$/.test(d) || /^07[0-9]{8}$/.test(d); }
   function validate() {
     var e = {};
+    if (!S.intent) e.intent = T('err.intent');
     if (S.f.name.length < 2) e.name = T('err.name');
     if (!phoneOk(S.f.phone)) e.phone = T('err.phone');
-    if (S.f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(S.f.email)) e.email = T('err.email');
+    if (!S.f.email) e.email = T('err.email.req');
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(S.f.email)) e.email = T('err.email');
     if (!S.f.consent) e.consent = T('err.consent.long');
     return e;
   }
   function submit() {
     readForm(); S.errs = validate(); S.msg = null;
     if (Object.keys(S.errs).length) {
-      render(S.errs.name ? 'f_name' : S.errs.phone ? 'f_phone' : S.errs.email ? 'f_email' : 'f_consent'); return;
+      render(S.errs.intent ? 'qi0' : S.errs.name ? 'f_name' : S.errs.phone ? 'f_phone' : S.errs.email ? 'f_email' : 'f_consent'); return;
     }
     if (PV) { pvDone(); return; }
     S.busy = true; render();
     track('booking_submit', { booking_type: S.type });
     var body = { action: 'book', type: S.type, date: S.day, time: S.slot, full_name: S.f.name, phone: S.f.phone,
-      email: S.f.email || undefined, city: S.f.city || undefined, notes: S.f.notes || undefined, plan: S.plan || undefined,
+      email: S.f.email || undefined, city: S.f.city || undefined, notes: S.f.notes || undefined, intent: S.intent || undefined,
       consent: S.f.consent === true, website: S.f.website || undefined, page: (srcPage || location.href).slice(0, 500) };
     UTM_KEYS.forEach(function (k) { if (utm[k]) body[k] = utm[k]; });
     api({ action: 'book' }, body).then(function (j) {
@@ -934,7 +957,7 @@ body.pv{padding-bottom:64px}
     else if (a === 'to3') { if (S.slot) go(3); }
     else if (a === 'day') { S.day = v; S.slot = null; render(); var x = document.querySelector('.day[aria-checked="true"]'); if (x) x.focus(); }
     else if (a === 'slot') { S.slot = v; track('booking_slot', { booking_type: S.type || (S.mg && S.mg.booking.type), booking_date: S.day, booking_time: v }); render(); var y = document.querySelector('.slot[aria-checked="true"]'); if (y) y.focus(); }
-    else if (a === 'plan') { readForm(); S.plan = S.plan === v ? null : v; S.moreOpen = true; render(); }
+    else if (a === 'intent') { readForm(); S.intent = v; delete S.errs.intent; render(); var qi = document.querySelector('[data-act="intent"][aria-checked="true"]'); if (qi) qi.focus(); }
     else if (a === 'copy') {
       var done = function () { var l = $('cpL'); if (l) { l.textContent = T('done.copied'); setTimeout(function () { if ($('cpL')) $('cpL').textContent = T('done.copy'); }, 1800); } };
       var fb = function () { var c = $('cpF'); if (c) { c.style.display = 'block'; c.innerHTML = '<input class="cpbox" readonly aria-label="הקישור לשינוי או ביטול" value="' + h(v) + '">'; var i2 = c.querySelector('input'); i2.focus(); i2.select(); } };
