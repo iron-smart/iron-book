@@ -384,7 +384,23 @@ body.pv{padding-bottom:64px}
 
   var $ = function (id) { return document.getElementById(id); };
   function h(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-  function track(ev, extra) { if (PV) return; try { var o = { event: ev }; for (var k in (extra || {})) o[k] = extra[k]; window.dataLayer.push(o); } catch (e) { /* בלי מעקב */ } }
+  /* v2.8 — "נקבעה פגישה" למטא (03/11/2026, קמפיין HOME קבוצה ג׳). הפיקסל נטען מ-GTM; אם לא — init בלי PageView. */
+  var META_PIXEL = '444848263428706';
+  function metaSchedule(type) {
+    try {
+      var w = window;
+      if (!w.fbq) {
+        var n = w.fbq = function () { if (n.callMethod) n.callMethod.apply(n, arguments); else n.queue.push(arguments); };
+        if (!w._fbq) w._fbq = n; n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+        var s = document.createElement('script'); s.async = true; s.src = 'https://connect.facebook.net/en_US/fbevents.js';
+        document.head.appendChild(s);
+        w.fbq('init', META_PIXEL);
+      }
+      w.fbq('trackSingle', META_PIXEL, 'Schedule', { content_name: type || '' });
+    } catch (e) { /* בלי מעקב */ }
+  }
+  function track(ev, extra) { if (PV) return; try { var o = { event: ev }; for (var k in (extra || {})) o[k] = extra[k]; window.dataLayer.push(o); } catch (e) { /* בלי מעקב */ }
+    if (ev === 'booking_complete') metaSchedule(extra && extra.booking_type); }
   function store(k, v) { try { if (v === undefined) return window.sessionStorage.getItem(k); window.sessionStorage.setItem(k, v); } catch (e) { return null; } return null; }
 
   /* ── תאריכים: YYYY-MM-DD בשעון ישראל, מהשרת ── */
