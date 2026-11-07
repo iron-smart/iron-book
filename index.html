@@ -420,6 +420,20 @@ body.pv{padding-bottom:64px}
   if (got) store('ifb_utm', JSON.stringify(utm));
   var srcPage = store('ifb_ref') || document.referrer || '';
   if (document.referrer && !store('ifb_ref')) store('ifb_ref', document.referrer);
+  /* v2.9 — מקור ההגעה האמיתי (05/11/2026, רומן: "המקור האמיתי של הלידים מהאתר"). עד כאן ליד מהקביעה נכנס
+     בלי מקור: ה-UTM נקראו רק מכתובת הדף הזה, והמעבר מהאתר (קישור רגיל) אינו נושא אותם.
+     העוגייה iron_attr נכתבת בתג GTM באתר על .ironfitness.co.il ולכן נקראת כאן: {f:<מגע ראשון>, l:<אחרון>}.
+     אין עוגייה: הגיעו מהאתר ⇒ לא ידוע (null, לא "ישיר"); הגיעו מבחוץ/ישירות ⇒ המגע של הדף הזה. */
+  function ironAttr() {
+    var a = null;
+    try { var m = document.cookie.match(/(?:^|; )iron_attr=([^;]*)/); if (m) a = JSON.parse(decodeURIComponent(m[1])); } catch (e) { a = null; }
+    if (a && typeof a === 'object' && a.f && typeof a.f === 'object') return a;
+    var ref = document.referrer || '';
+    if (/^https?:[/][/]([a-z0-9-]+[.])*ironfitness[.]co[.]il/i.test(ref)) return null;
+    var t = { ref: ref.slice(0, 600), lp: location.href.slice(0, 600), at: new Date().toISOString().slice(0, 16) };
+    ['gclid', 'gbraid', 'wbraid', 'fbclid', 'srsltid', 'gad_campaignid'].concat(UTM_KEYS).forEach(function (k) { var v = qs.get(k); if (v) t[k] = v.slice(0, 200); });
+    return { f: t, l: t };
+  }
 
   var S = {
     mode: token ? 'manage' : 'book', step: 1, cfg: null, type: null, days: null,
@@ -891,6 +905,7 @@ body.pv{padding-bottom:64px}
       email: S.f.email || undefined, city: S.f.city || undefined, notes: S.f.notes || undefined, intent: S.intent || undefined,
       consent: S.f.consent === true, website: S.f.website || undefined, page: (srcPage || location.href).slice(0, 500) };
     UTM_KEYS.forEach(function (k) { if (utm[k]) body[k] = utm[k]; });
+    try { var at = ironAttr(); if (at) body.attribution = at; } catch (e) { /* בלי מקור — הקביעה ממשיכה */ }
     api({ action: 'book' }, body).then(function (j) {
       S.busy = false;
       if (j.ok && j.booked) {
